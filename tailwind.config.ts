@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -98,6 +99,7 @@ export default {
         },
         'shimmer': {
           '0%': { transform: 'translateX(-100%)' },
+          '50%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(100%)' }
         },
         'race-move': {
@@ -159,7 +161,7 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'pulse-once': 'pulse-once 0.5s ease-out',
-        'shimmer': 'shimmer 2s infinite',
+        'shimmer': 'shimmer 2.5s ease-in-out infinite',
         'race-move': 'race-move 1s ease-out forwards',
         'fade-in-right': 'fade-in-right 0.5s ease-out forwards',
         'fade-in-up': 'fade-in-up 0.4s ease-out forwards',
