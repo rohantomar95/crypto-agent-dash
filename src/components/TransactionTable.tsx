@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { ArrowUp, ArrowDown } from 'lucide-react';
 
 interface TransactionTableProps {
   agents: AgentData[];
@@ -26,91 +27,114 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ agents }) => {
     }).format(amount);
   };
   
-  // Get icon for trade action
-  const getActionIcon = (action: TradeAction) => {
+  // Get icon and style for trade action
+  const getActionDetails = (action: TradeAction) => {
     switch (action) {
       case 'long':
-        return <span className="inline-block w-4 h-4 text-crypto-green">↗</span>;
+        return {
+          icon: <ArrowUp size={16} />,
+          bgClass: 'bg-crypto-green/20',
+          textClass: 'text-crypto-green',
+          borderClass: 'border-crypto-green/30'
+        };
       case 'short':
-        return <span className="inline-block w-4 h-4 text-crypto-red">↘</span>;
+        return {
+          icon: <ArrowDown size={16} />,
+          bgClass: 'bg-crypto-red/20',
+          textClass: 'text-crypto-red',
+          borderClass: 'border-crypto-red/30'
+        };
       case 'hold':
-        return <span className="inline-block w-4 h-4 text-muted-foreground">―</span>;
       default:
-        return null;
+        return {
+          icon: <span className="inline-block w-4 h-[2px] bg-muted-foreground"></span>,
+          bgClass: 'bg-muted/20',
+          textClass: 'text-muted-foreground',
+          borderClass: 'border-muted/30'
+        };
     }
   };
+
+  // Group transactions by agent
+  const transactionsByAgent = agents.reduce((acc, agent) => {
+    agent.transactions.forEach(transaction => {
+      acc.push({
+        ...transaction,
+        agent: {
+          id: agent.id,
+          name: agent.name,
+          color: agent.color,
+          portfolioValue: agent.portfolioValue,
+          cashBalance: agent.cashBalance
+        }
+      });
+    });
+    return acc;
+  }, [] as Array<any>).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 10);
   
   return (
-    <Card className="glass-card">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold crypto-gradient-text">
+    <Card className="glass-card border-crypto-purple/30">
+      <CardHeader className="pb-2 bg-gradient-to-r from-crypto-purple/20 to-transparent">
+        <CardTitle className="text-lg font-bold crypto-gradient-text flex items-center gap-2">
+          <div className="h-2 w-2 bg-crypto-purple rounded-full animate-pulse"></div>
           Agent Transactions
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-secondary/20">
-              <TableRow>
-                <TableHead className="w-[120px]">Agent</TableHead>
-                <TableHead className="text-center">Action</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-                <TableHead className="text-right">Time</TableHead>
-                <TableHead className="text-right">Portfolio Value</TableHead>
-                <TableHead className="text-right">Cash Balance</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {agents.flatMap(agent => 
-                agent.transactions.map((transaction, index) => (
-                  <TableRow 
-                    key={transaction.id} 
-                    className={index === 0 ? "animate-fade-in-right" : ""}
-                  >
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="h-2 w-2 rounded-full" 
-                          style={{ backgroundColor: agent.color }}
-                        />
-                        <span className="font-medium">{agent.name}</span>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 gap-4">
+          {transactionsByAgent.map((transaction, index) => {
+            const { icon, bgClass, textClass, borderClass } = getActionDetails(transaction.action);
+            
+            return (
+              <div 
+                key={transaction.id} 
+                className={`glass-card border ${borderClass} rounded-lg overflow-hidden animate-fade-in-right`} 
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <div className="flex flex-col md:flex-row">
+                  {/* Agent info */}
+                  <div className="p-4 md:w-1/4 flex items-center space-x-3">
+                    <div 
+                      className="h-10 w-10 rounded-full flex items-center justify-center" 
+                      style={{ backgroundColor: `${transaction.agent.color}30` }}
+                    >
+                      <div className="h-3 w-3 rounded-full animate-pulse" style={{ backgroundColor: transaction.agent.color }}></div>
+                    </div>
+                    <div>
+                      <div className="font-bold">{transaction.agent.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {transaction.timestamp.toLocaleTimeString([], {
+                          hour: '2-digit', 
+                          minute: '2-digit', 
+                          second: '2-digit'
+                        })}
                       </div>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex items-center justify-center">
-                        {getActionIcon(transaction.action)}
-                        <span 
-                          className={`ml-1 font-mono uppercase text-xs ${
-                            transaction.action === 'long' ? 'text-crypto-green' : 
-                            transaction.action === 'short' ? 'text-crypto-red' : 
-                            'text-muted-foreground'
-                          }`}
-                        >
-                          {transaction.action}
-                        </span>
+                    </div>
+                  </div>
+                  
+                  {/* Action details */}
+                  <div className={`${bgClass} flex-1 p-4 flex items-center justify-between`}>
+                    <div className="flex items-center gap-2">
+                      <div className={`${textClass} flex items-center gap-1 font-mono uppercase`}>
+                        {icon} {transaction.action}
                       </div>
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      {transaction.amount > 0 ? formatCurrency(transaction.amount) : "—"}
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(transaction.price)}
-                    </TableCell>
-                    <TableCell className="text-right text-sm text-muted-foreground">
-                      {transaction.timestamp.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'})}
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(agent.portfolioValue)}
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(agent.cashBalance)}
-                    </TableCell>
-                  </TableRow>
-                ))
-              ).slice(0, 10)} {/* Show only 10 most recent transactions */}
-            </TableBody>
-          </Table>
+                      {transaction.amount > 0 && (
+                        <div className="bg-background/50 px-2 py-1 rounded-md text-sm font-mono">
+                          {formatCurrency(transaction.amount)}
+                        </div>
+                      )}
+                      <div className="text-sm">@ {formatCurrency(transaction.price)}</div>
+                    </div>
+                    
+                    <div className="flex flex-col items-end">
+                      <div className="text-sm font-medium">Portfolio: {formatCurrency(transaction.agent.portfolioValue)}</div>
+                      <div className="text-xs text-muted-foreground">Cash: {formatCurrency(transaction.agent.cashBalance)}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
