@@ -88,18 +88,18 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
   };
 
   return (
-    <Card className="glass-card overflow-hidden border-crypto-purple/30 shadow-neon">
-      <CardHeader className="pb-2 bg-gradient-to-r from-crypto-purple/30 to-transparent flex flex-row justify-between items-center">
-        <CardTitle className="text-lg font-bold crypto-gradient-text flex items-center gap-2">
-          <div className="h-2 w-2 bg-crypto-purple rounded-full animate-pulse-glow"></div>
+    <Card className="glass-card overflow-hidden border-[#6366f1]/30 shadow-neon bg-[#131624]/90">
+      <CardHeader className="pb-2 bg-gradient-to-r from-[#6366f1]/20 to-transparent flex flex-row justify-between items-center">
+        <CardTitle className="text-lg font-bold flex items-center gap-2 text-white">
+          <div className="h-2 w-2 bg-[#6366f1] rounded-full animate-pulse-glow"></div>
           Agent Performance
         </CardTitle>
-        <div className="bg-crypto-purple/20 rounded-full p-1.5">
-          <BarChart size={16} className="text-crypto-purple" />
+        <div className="bg-[#6366f1]/20 rounded-full p-1.5">
+          <BarChart size={16} className="text-[#6366f1]" />
         </div>
       </CardHeader>
       <CardContent className="p-3">
-        <div className="space-y-2 bg-crypto-gray-dark/30 rounded-lg p-3 relative overflow-hidden">
+        <div className="space-y-2 bg-[#131624]/70 rounded-lg p-3 relative overflow-hidden">
           {/* Background grid */}
           <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
           
@@ -115,22 +115,27 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
               return (
                 <div 
                   key={agent.id} 
-                  className="absolute left-0 right-0 flex items-center gap-2 transition-transform duration-1000 ease-out"
+                  className="absolute left-0 right-0 flex items-center gap-4 transition-transform duration-1000 ease-out"
                   style={{ 
                     transform: `translateY(${position * 40}px)`,
                   }}
                 >
+                  {/* Rank indicator */}
+                  <div className="min-w-[30px] text-center flex justify-center items-center font-mono text-xs text-gray-400">
+                    #{position + 1}
+                  </div>
+                  
                   {/* Agent Name */}
-                  <div className="w-[120px] text-right pr-2">
-                    <div className="text-sm font-semibold truncate whitespace-normal">
+                  <div className="w-[120px] text-left">
+                    <div className="text-sm font-semibold truncate text-white">
                       {agent.name}
                     </div>
                   </div>
                   
                   {/* Bar Container */}
-                  <div className="flex-1 relative h-7">
+                  <div className="flex-1 relative h-6">
                     {/* Background Bar */}
-                    <div className="absolute inset-y-0 left-0 right-0 bg-crypto-gray-dark/30 rounded-md"></div>
+                    <div className="absolute inset-y-0 left-0 right-0 bg-[#1e293b]/50 rounded-md"></div>
                     
                     {/* Value Bar */}
                     <div 
@@ -138,40 +143,21 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                       style={{ 
                         width: `${progressPercentage}%`,
                         backgroundColor: agent.color,
-                        boxShadow: `0 0 15px ${agent.color}, 0 0 25px ${agent.color}80, 0 0 35px ${agent.color}40`,
+                        boxShadow: `0 0 10px ${agent.color}, 0 0 15px ${agent.color}40`,
                       }}
                     >
                       {/* Animated gradient effect */}
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent animate-shimmer"></div>
-                      
-                      {/* Agent indicator - small pill at the end */}
-                      <div 
-                        className={`absolute -right-2 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full
-                          flex items-center justify-center text-xs font-bold text-white
-                          ${trend === 'increase' ? 'scale-110' : trend === 'decrease' ? 'scale-90' : ''}`}
-                        style={{ 
-                          backgroundColor: agent.color, 
-                          transition: 'transform 0.3s ease',
-                          boxShadow: `0 0 10px ${agent.color}, 0 0 15px ${agent.color}`
-                        }}
-                      >
-                        {agent.id}
-                      </div>
                     </div>
                     
                     {/* Value Text */}
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-xs font-bold">
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-xs font-bold text-gray-300">
                       {formatCurrency(agent.portfolioValue)}
-                    </div>
-                    
-                    {/* Rank indicator */}
-                    <div className="absolute -left-8 top-1/2 -translate-y-1/2 flex items-center justify-center font-mono text-xs">
-                      #{position + 1}
                     </div>
                     
                     {/* Position Change Indicator */}
                     <div className={`absolute -right-7 top-1/2 -translate-y-1/2 flex items-center
-                      ${isProfit ? 'text-crypto-green' : 'text-crypto-red'}`}
+                      ${isProfit ? 'text-green-500' : 'text-red-500'}`}
                     >
                       {positionChange === 'up' && <ArrowUp size={14} className="animate-bounce" />}
                       {positionChange === 'down' && <ArrowDown size={14} className="animate-bounce" />}

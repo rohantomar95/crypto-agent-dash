@@ -53,14 +53,14 @@ export default {
           foreground: 'hsl(var(--card-foreground))'
         },
         crypto: {
-          'purple': '#9b87f5',
-          'purple-dark': '#7E69AB',
+          'purple': '#6366f1', // Updated to match the screenshot
+          'purple-dark': '#4f46e5', // Darker shade
           'blue': '#0EA5E9',
           'orange': '#F97316',
           'green': '#10B981',
           'red': '#EF4444',
-          'gray-dark': '#1A1F2C',
-          'gray-light': '#403E43',
+          'gray-dark': '#131624', // Updated to match the screenshot
+          'gray-light': '#1e293b', // Adjusted for theme
         },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
@@ -177,13 +177,13 @@ export default {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'grid-pattern': 'linear-gradient(to right, #232631 1px, transparent 1px), linear-gradient(to bottom, #232631 1px, transparent 1px)',
-        'glow-purple': 'radial-gradient(circle, rgba(155, 135, 245, 0.15) 0%, rgba(30, 30, 46, 0) 70%)'
+        'glow-purple': 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(30, 30, 46, 0) 70%)' // Updated to match new color
       },
       transitionTimingFunction: {
         'bounce-in-out': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
       },
       boxShadow: {
-        'neon': '0 0 20px rgba(155, 135, 245, 0.5), 0 0 40px rgba(155, 135, 245, 0.3)'
+        'neon': '0 0 20px rgba(99, 102, 241, 0.5), 0 0 40px rgba(99, 102, 241, 0.3)' // Updated to match new color
       }
     }
   },
