@@ -146,8 +146,7 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                         boxShadow: `0 0 10px ${agent.color}, 0 0 15px ${agent.color}40`,
                       }}
                     >
-                      {/* Animated gradient effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent animate-shimmer"></div>
+                      {/* Remove the shimmer animation from here */}
                     </div>
                     
                     {/* Value Text */}

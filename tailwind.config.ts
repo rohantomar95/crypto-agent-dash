@@ -97,10 +97,6 @@ export default {
           '50%': { transform: 'scale(1.02)' },
           '100%': { transform: 'scale(1)' }
         },
-        'shimmer': {
-          '0%': { transform: 'translateX(-150%)' },
-          '100%': { transform: 'translateX(150%)' }
-        },
         'hexagon-rotate': {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' }
@@ -174,7 +170,6 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'pulse-glow': 'pulse-glow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'pulse-once': 'pulse-once 0.5s ease-out',
-        'shimmer': 'shimmer 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'hexagon-rotate': 'hexagon-rotate 8s linear infinite',
         'crypto-pulse': 'crypto-pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'race-move': 'race-move 1s ease-out forwards',
