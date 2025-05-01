@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -177,6 +176,9 @@ export default {
       },
       transitionTimingFunction: {
         'bounce-in-out': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
+      },
+      boxShadow: {
+        'neon': '0 0 20px rgba(155, 135, 245, 0.5), 0 0 40px rgba(155, 135, 245, 0.3)'
       }
     }
   },
