@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import Layout from '@/components/Layout';
 import CandlestickChart from '@/components/CandlestickChart';
 import AgentRace from '@/components/AgentRace';
@@ -21,7 +21,7 @@ const Index = () => {
           />
         </div>
         
-        {/* Agent Race - Now with multiple visualization modes */}
+        {/* Agent Race - Now with multiple visualization modes including horizontal */}
         <div className="animate-fade-in-right" style={{ animationDelay: '0.2s' }}>
           <AgentRace agents={agents} />
         </div>

@@ -1,15 +1,14 @@
-
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentData } from '@/hooks/useTradeData';
-import { ArrowUp, ArrowDown, Car, Building, Network, ChevronRight } from 'lucide-react';
+import { ArrowUp, ArrowDown, Car, Building, Network, ChevronRight, MoveHorizontal } from 'lucide-react';
 
 interface AgentRaceProps {
   agents: AgentData[];
 }
 
 // Visualization modes
-type VisualizationMode = 'bars' | 'race' | 'tower' | 'network';
+type VisualizationMode = 'bars' | 'race' | 'tower' | 'network' | 'horizontal';
 
 const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
   const [sortedAgents, setSortedAgents] = useState<AgentData[]>([]);
@@ -70,7 +69,7 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
 
   // Switch to next visualization mode
   const cycleVisualizationMode = () => {
-    const modes: VisualizationMode[] = ['race', 'bars', 'tower', 'network'];
+    const modes: VisualizationMode[] = ['race', 'horizontal', 'bars', 'tower', 'network'];
     const currentIndex = modes.indexOf(visualizationMode);
     const nextIndex = (currentIndex + 1) % modes.length;
     setVisualizationMode(modes[nextIndex]);
@@ -80,6 +79,7 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
   const getVisualizationIcon = () => {
     switch (visualizationMode) {
       case 'race': return <Car size={16} />;
+      case 'horizontal': return <MoveHorizontal size={16} />;
       case 'bars': return <ChevronRight size={16} />;
       case 'tower': return <Building size={16} />;
       case 'network': return <Network size={16} />;
@@ -174,6 +174,88 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                 </div>
               );
             })}
+          </div>
+        )}
+        
+        {visualizationMode === 'horizontal' && (
+          <div className="space-y-1 bg-crypto-gray-dark/20 rounded-lg p-2 relative overflow-hidden h-[200px]">
+            {/* Racing track markings */}
+            <div className="absolute inset-y-0 right-0 w-[1px] bg-white/10 z-0"></div>
+            <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+            {/* Start/Finish line */}
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-crypto-purple via-transparent to-crypto-purple"></div>
+            <div className="absolute right-8 top-0 bottom-0 w-1 bg-gradient-to-b from-crypto-green via-transparent to-crypto-green"></div>
+            
+            {/* Track lanes */}
+            <div className="h-full flex flex-col justify-between">
+              {sortedAgents.map((agent, index) => {
+                const progressPercentage = (agent.portfolioValue / maxValue) * 100;
+                const trend = getValueTrend(agent.id, agent.portfolioValue);
+                const isProfit = agent.profitLoss >= 0;
+                
+                return (
+                  <div 
+                    key={agent.id} 
+                    className="flex-1 flex items-center animate-fade-in-right relative"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    {/* Lane divider */}
+                    {index > 0 && (
+                      <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/5"></div>
+                    )}
+                    
+                    {/* Agent rank and name */}
+                    <div className="w-14 flex items-center justify-start gap-1.5 z-10">
+                      <div className={`text-xs font-mono ${index < 3 ? 'text-yellow-400' : 'text-gray-400'}`}>
+                        #{index + 1}
+                      </div>
+                      {index < 3 && <div className="text-xs">{'🏆🥈🥉'[index]}</div>}
+                    </div>
+                    
+                    {/* Racing car on horizontal track */}
+                    <div className="flex-1 relative h-6">
+                      {/* Car */}
+                      <div 
+                        className="absolute top-1/2 -translate-y-1/2 transition-all duration-1000 ease-out"
+                        style={{ 
+                          left: `${Math.max(progressPercentage - 5, 0)}%`,
+                          filter: `drop-shadow(0 0 8px ${agent.color}80)`, 
+                        }}
+                      >
+                        <div 
+                          className={`w-7 h-5 flex items-center justify-center rounded transition-transform ${
+                            trend === 'increase' ? 'scale-110' : trend === 'decrease' ? 'scale-90' : ''
+                          }`}
+                          style={{ backgroundColor: agent.color }}
+                        >
+                          <span className="text-xs font-bold text-white">{agent.id}</span>
+                        </div>
+                        
+                        {/* Speed trail */}
+                        {index === 0 && (
+                          <div className="absolute top-1/2 right-7 -translate-y-1/2 w-12 h-1">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/80 animate-shimmer opacity-50"></div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Value */}
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-[10px] flex items-center gap-1">
+                        <span className={isProfit ? 'text-crypto-green' : 'text-crypto-red'}>
+                          {formatProfitLoss(agent.portfolioValue)}
+                        </span>
+                        {formatCurrency(agent.portfolioValue)}
+                      </div>
+                      
+                      {/* Name */}
+                      <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] font-semibold opacity-70 z-20">
+                        {agent.name}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
         
