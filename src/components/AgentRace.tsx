@@ -72,8 +72,8 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
           Agent Performance Race
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
-        <div className="space-y-6">
+      <CardContent className="p-4">
+        <div className="space-y-3">
           {sortedAgents.map((agent, index) => {
             // Calculate progress width as percentage of max value
             const progressPercentage = (agent.portfolioValue / maxValue) * 100;
@@ -83,10 +83,10 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
             const isProfit = agent.profitLoss >= 0;
             
             return (
-              <div key={agent.id} className="space-y-2" style={{ animationDelay: `${index * 0.1}s` }}>
-                <div className="flex justify-between text-sm">
+              <div key={agent.id} className="space-y-1" style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="flex justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <div className={`h-3 w-3 rounded-full relative ${index === 0 ? 'animate-pulse-glow' : ''}`} 
+                    <div className={`h-2.5 w-2.5 rounded-full relative ${index === 0 ? 'animate-pulse-glow' : ''}`} 
                          style={{ backgroundColor: agent.color }}>
                       {index === 0 && (
                         <div className="absolute -inset-1 rounded-full animate-ping opacity-30"
@@ -94,23 +94,23 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                       )}
                     </div>
                     <span className="font-semibold">{agent.name}</span>
-                    {index === 0 && <span className="text-xs bg-crypto-purple/20 px-2 py-0.5 rounded-full">LEADING</span>}
+                    {index === 0 && <span className="text-[10px] bg-crypto-purple/20 px-1.5 py-0.5 rounded-full">LEADING</span>}
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`${isProfit ? 'text-crypto-green' : 'text-crypto-red'} flex items-center`}>
-                      {isProfit ? <ArrowUp size={14} className="mr-1" /> : <ArrowDown size={14} className="mr-1" />}
+                  <div className="flex items-center gap-2">
+                    <span className={`${isProfit ? 'text-crypto-green' : 'text-crypto-red'} flex items-center text-xs`}>
+                      {isProfit ? <ArrowUp size={12} className="mr-0.5" /> : <ArrowDown size={12} className="mr-0.5" />}
                       {formatProfitLoss(agent.portfolioValue)}
                     </span>
-                    <span className={`font-mono transition-all duration-500 ${
-                      trend === 'increase' ? 'text-crypto-green scale-110' : 
-                      trend === 'decrease' ? 'text-crypto-red scale-90' : ''
+                    <span className={`font-mono text-xs transition-all duration-500 ${
+                      trend === 'increase' ? 'text-crypto-green scale-105' : 
+                      trend === 'decrease' ? 'text-crypto-red scale-95' : ''
                     }`}>
                       {formatCurrency(agent.portfolioValue)}
                     </span>
                   </div>
                 </div>
                 
-                <div className="h-8 w-full bg-secondary/30 rounded-full overflow-hidden relative">
+                <div className="h-5 w-full bg-secondary/30 rounded-full overflow-hidden relative">
                   <div 
                     className={`h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden flex items-center px-3 ${
                       trend === 'increase' ? 'animate-pulse-once' : ''
@@ -133,24 +133,8 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                   </div>
                   
                   {/* Position indicator */}
-                  <div className="absolute top-0 right-0 bg-crypto-gray-dark/70 text-xs px-2 rounded-bl-lg rounded-tr-lg font-mono">
+                  <div className="absolute top-0 right-0 bg-crypto-gray-dark/70 text-[10px] px-1.5 rounded-bl-lg rounded-tr-lg font-mono">
                     #{index + 1}
-                  </div>
-                </div>
-                
-                {/* Last action indicator */}
-                <div className="flex justify-end items-center text-xs">
-                  <div className="flex items-center gap-1 px-2 py-1 bg-secondary/30 rounded-full">
-                    <span className="text-muted-foreground">Last:</span>
-                    <span className={`font-mono uppercase ${
-                      agent.lastAction === 'long' ? 'text-crypto-green' : 
-                      agent.lastAction === 'short' ? 'text-crypto-red' : 
-                      'text-muted-foreground'
-                    }`}>
-                      {agent.lastAction}
-                      {agent.lastAction !== 'hold' && agent.lastAmount > 0 && 
-                        <span className="ml-1">${agent.lastAmount.toFixed(0)}</span>}
-                    </span>
                   </div>
                 </div>
               </div>
