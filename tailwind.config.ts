@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -89,8 +88,9 @@ export default {
           to: { height: '0' }
         },
         'pulse-glow': {
-          '0%, 100%': { opacity: '0.6' },
-          '50%': { opacity: '1' }
+          '0%': { opacity: '0.4' },
+          '50%': { opacity: '0.8' },
+          '100%': { opacity: '0.4' }
         },
         'pulse-once': {
           '0%': { transform: 'scale(1)' },
@@ -98,9 +98,22 @@ export default {
           '100%': { transform: 'scale(1)' }
         },
         'shimmer': {
-          '0%': { transform: 'translateX(-100%)' },
-          '50%': { transform: 'translateX(0%)' },
-          '100%': { transform: 'translateX(100%)' }
+          '0%': { transform: 'translateX(-150%)' },
+          '100%': { transform: 'translateX(150%)' }
+        },
+        'hexagon-rotate': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' }
+        },
+        'crypto-pulse': {
+          '0%, 100%': { 
+            boxShadow: '0 0 0 0 rgba(99, 102, 241, 0)', 
+            borderColor: 'rgba(99, 102, 241, 0.3)' 
+          },
+          '50%': { 
+            boxShadow: '0 0 15px 3px rgba(99, 102, 241, 0.5)', 
+            borderColor: 'rgba(99, 102, 241, 0.8)' 
+          }
         },
         'race-move': {
           from: { transform: 'translateX(0)' },
@@ -159,9 +172,11 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-glow': 'pulse-glow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'pulse-once': 'pulse-once 0.5s ease-out',
-        'shimmer': 'shimmer 2.5s ease-in-out infinite',
+        'shimmer': 'shimmer 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'hexagon-rotate': 'hexagon-rotate 8s linear infinite',
+        'crypto-pulse': 'crypto-pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'race-move': 'race-move 1s ease-out forwards',
         'fade-in-right': 'fade-in-right 0.5s ease-out forwards',
         'fade-in-up': 'fade-in-up 0.4s ease-out forwards',
