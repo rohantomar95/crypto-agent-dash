@@ -1,8 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AgentData } from '@/hooks/useTradeData';
-import { ArrowUp, ArrowDown, BarChart } from 'lucide-react';
+import { AgentData, TradeAction } from '@/hooks/useTradeData';
+import { ArrowUp, ArrowDown, BarChart, TrendingUp, TrendingDown } from 'lucide-react';
 
 interface AgentRaceProps {
   agents: AgentData[];
@@ -87,6 +86,25 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
     return 'same';
   };
 
+  // Calculate if the agent is net long or short based on transactions
+  const getNetPosition = (agent: AgentData): 'long' | 'short' | 'neutral' => {
+    if (!agent.transactions || agent.transactions.length === 0) return 'neutral';
+    
+    // Count long and short positions
+    const positions = agent.transactions.reduce(
+      (acc, transaction) => {
+        if (transaction.action === 'long') acc.long += transaction.amount;
+        else if (transaction.action === 'short') acc.short += transaction.amount;
+        return acc;
+      },
+      { long: 0, short: 0 }
+    );
+    
+    if (positions.long > positions.short) return 'long';
+    if (positions.short > positions.long) return 'long';
+    return 'neutral';
+  };
+
   return (
     <Card className="glass-card overflow-hidden border-[#6366f1]/30 shadow-neon bg-[#131624]/90">
       <CardHeader className="pb-2 bg-gradient-to-r from-[#6366f1]/20 to-transparent flex flex-row justify-between items-center">
@@ -111,6 +129,7 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
               const position = positions[agent.id] || 0;
               const positionChange = getPositionChange(agent.id, position);
               const isProfit = agent.portfolioValue >= 100000;
+              const netPosition = getNetPosition(agent);
               
               return (
                 <div 
@@ -125,8 +144,21 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                     #{position + 1}
                   </div>
                   
-                  {/* Agent Name */}
-                  <div className="w-[120px] text-left">
+                  {/* Agent Name with position indicator */}
+                  <div className="w-[120px] text-left flex items-center gap-1.5">
+                    {/* Net position indicator */}
+                    {netPosition === 'long' && (
+                      <TrendingUp 
+                        size={14} 
+                        className="text-green-500"
+                      />
+                    )}
+                    {netPosition === 'short' && (
+                      <TrendingDown 
+                        size={14} 
+                        className="text-red-500"
+                      />
+                    )}
                     <div className="text-sm font-semibold truncate text-white">
                       {agent.name}
                     </div>
