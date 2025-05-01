@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -135,6 +136,19 @@ export default {
         'glow': {
           '0%, 100%': { boxShadow: '0 0 15px 0px rgba(155, 135, 245, 0.4)' },
           '50%': { boxShadow: '0 0 25px 5px rgba(155, 135, 245, 0.7)' }
+        },
+        'smooth-slide': {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(var(--slide-y))' }
+        },
+        'smooth-value-change': {
+          '0%': { transform: 'scale(1.05)', filter: 'brightness(1.2)' },
+          '100%': { transform: 'scale(1)', filter: 'brightness(1)' }
+        },
+        'trade-pulse': {
+          '0%': { boxShadow: '0 0 0 0 rgba(255, 255, 255, 0.7)' },
+          '70%': { boxShadow: '0 0 0 10px rgba(255, 255, 255, 0)' },
+          '100%': { boxShadow: '0 0 0 0 rgba(255, 255, 255, 0)' }
         }
       },
       animation: {
@@ -151,12 +165,18 @@ export default {
         'candle-appear': 'candle-appear 0.3s ease-out forwards',
         'marker-pulse': 'marker-pulse 2s ease-in-out infinite',
         'float': 'float 6s ease-in-out infinite',
-        'glow': 'glow 3s ease-in-out infinite'
+        'glow': 'glow 3s ease-in-out infinite',
+        'smooth-slide': 'smooth-slide 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+        'smooth-value-change': 'smooth-value-change 0.7s ease-out forwards',
+        'trade-pulse': 'trade-pulse 1s ease-out forwards'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'grid-pattern': 'linear-gradient(to right, #232631 1px, transparent 1px), linear-gradient(to bottom, #232631 1px, transparent 1px)',
         'glow-purple': 'radial-gradient(circle, rgba(155, 135, 245, 0.15) 0%, rgba(30, 30, 46, 0) 70%)'
+      },
+      transitionTimingFunction: {
+        'bounce-in-out': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
       }
     }
   },

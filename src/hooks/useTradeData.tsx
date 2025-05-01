@@ -14,6 +14,7 @@ export interface AgentData {
   lastAmount: number;
   profitLoss: number;
   transactions: Transaction[];
+  targetPortfolioValue?: number; // Add target value for smooth animation
 }
 
 export interface Transaction {
@@ -57,7 +58,8 @@ export const useTradeData = () => {
       lastAction: 'hold' as TradeAction,
       lastAmount: 0,
       profitLoss: 0,
-      transactions: []
+      transactions: [],
+      targetPortfolioValue: 100000
     }));
     
     setAgents(initialAgents);
@@ -84,9 +86,96 @@ export const useTradeData = () => {
     setCandles(historicalCandles);
   }, []);
   
-  // Update data every 10 seconds
+  // Effect for smooth portfolio value animation
   useEffect(() => {
-    const interval = setInterval(() => {
+    const animationInterval = setInterval(() => {
+      setAgents(prevAgents => prevAgents.map(agent => {
+        if (agent.targetPortfolioValue === undefined || agent.portfolioValue === agent.targetPortfolioValue) {
+          return agent;
+        }
+        
+        // Move 10% closer to target value each frame for smooth animation
+        const step = (agent.targetPortfolioValue - agent.portfolioValue) * 0.1;
+        const newValue = agent.portfolioValue + step;
+        
+        return {
+          ...agent,
+          portfolioValue: Math.abs(newValue - agent.targetPortfolioValue) < 100 
+            ? agent.targetPortfolioValue 
+            : newValue
+        };
+      }));
+    }, 50); // Update animation at 50ms intervals for smooth motion
+    
+    return () => clearInterval(animationInterval);
+  }, []);
+  
+  // Update trades every 2 seconds
+  useEffect(() => {
+    const tradeInterval = setInterval(() => {
+      // Update agent actions
+      setAgents(prevAgents => {
+        // Sort agents by current portfolio value to determine ranking
+        const sortedAgents = [...prevAgents].sort((a, b) => b.portfolioValue - a.portfolioValue);
+        const positionMap = new Map(sortedAgents.map((agent, index) => [agent.id, index]));
+        
+        return prevAgents.map(agent => {
+          // Decide on action randomly
+          const actions: TradeAction[] = ['long', 'short', 'hold'];
+          const action = actions[Math.floor(Math.random() * actions.length)];
+          
+          // Calculate amount (10-20% of cash balance)
+          const amount = action !== 'hold' 
+            ? agent.cashBalance * (Math.random() * 0.1 + 0.1) 
+            : 0;
+          
+          // Calculate new portfolio value with more significant changes
+          // More dramatic changes (5-10%) for a more visible race
+          const profitLossFactor = (Math.random() * 0.10) - 0.04; // -4% to +10% 
+          
+          // Higher agents have a better chance of making profit (to create more position changes)
+          const position = positionMap.get(agent.id) || 0;
+          const positionBonus = position < 2 ? 0.01 : position > 3 ? -0.01 : 0;
+          const adjustedFactor = profitLossFactor + positionBonus;
+          
+          // Calculate profit/loss and new target portfolio value
+          const profitLoss = agent.portfolioValue * adjustedFactor;
+          const newTargetValue = agent.portfolioValue + profitLoss;
+          
+          // Calculate new cash balance
+          const newCashBalance = action === 'hold' 
+            ? agent.cashBalance 
+            : agent.cashBalance - amount;
+          
+          // Create new transaction
+          const newTransaction = {
+            id: `${agent.id}-${Date.now()}`,
+            timestamp: new Date(),
+            action,
+            amount,
+            price: candles.length > 0 ? candles[candles.length - 1].close : initialPrice
+          };
+          
+          return {
+            ...agent,
+            targetPortfolioValue: newTargetValue,
+            cashBalance: newCashBalance,
+            lastAction: action,
+            lastAmount: amount,
+            profitLoss,
+            transactions: [newTransaction, ...agent.transactions.slice(0, 9)] // Keep only the 10 most recent
+          };
+        });
+      });
+      
+    }, 2000); // Trade every 2 seconds
+    
+    return () => clearInterval(tradeInterval);
+  }, [candles]);
+  
+  // Generate new candles less frequently (every 10 seconds)
+  useEffect(() => {
+    const candleInterval = setInterval(() => {
       // Generate new candle
       const previousCandle = candles[candles.length - 1];
       const now = new Date();
@@ -114,50 +203,9 @@ export const useTradeData = () => {
       setShowMarker(true);
       setTimeout(() => setShowMarker(false), 3000);
       
-      // Update agent actions
-      setAgents(prevAgents => prevAgents.map(agent => {
-        // Decide on action randomly
-        const actions: TradeAction[] = ['long', 'short', 'hold'];
-        const action = actions[Math.floor(Math.random() * actions.length)];
-        
-        // Calculate amount (10-20% of cash balance)
-        const amount = action !== 'hold' 
-          ? agent.cashBalance * (Math.random() * 0.1 + 0.1) 
-          : 0;
-          
-        // Calculate new portfolio value with some randomization
-        const profitLossFactor = (Math.random() * 0.06) - 0.03; // -3% to +3%
-        const profitLoss = agent.portfolioValue * profitLossFactor;
-        const newPortfolioValue = agent.portfolioValue + profitLoss;
-        
-        // Calculate new cash balance
-        const newCashBalance = action === 'hold' 
-          ? agent.cashBalance 
-          : agent.cashBalance - amount;
-          
-        // Create new transaction
-        const newTransaction = {
-          id: `${agent.id}-${Date.now()}`,
-          timestamp: new Date(),
-          action,
-          amount,
-          price: close
-        };
-        
-        return {
-          ...agent,
-          portfolioValue: newPortfolioValue,
-          cashBalance: newCashBalance,
-          lastAction: action,
-          lastAmount: amount,
-          profitLoss,
-          transactions: [newTransaction, ...agent.transactions.slice(0, 9)] // Keep only the 10 most recent
-        };
-      }));
-      
-    }, 10000);
+    }, 10000); // New candle every 10 seconds
     
-    return () => clearInterval(interval);
+    return () => clearInterval(candleInterval);
   }, [candles]);
   
   return { agents, candles, latestCandle, showMarker };
