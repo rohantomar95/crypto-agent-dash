@@ -1,13 +1,37 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from 'react';
+import Layout from '@/components/Layout';
+import CandlestickChart from '@/components/CandlestickChart';
+import AgentRace from '@/components/AgentRace';
+import TransactionTable from '@/components/TransactionTable';
+import { useTradeData } from '@/hooks/useTradeData';
 
 const Index = () => {
+  const { agents, candles, latestCandle, showMarker } = useTradeData();
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <Layout>
+      <div className="space-y-6">
+        {/* Candlestick Chart */}
+        <div className="animate-fade-in-right" style={{ animationDelay: '0.1s' }}>
+          <CandlestickChart 
+            data={candles} 
+            latestCandle={latestCandle}
+            showMarker={showMarker}
+          />
+        </div>
+        
+        {/* Agent Race */}
+        <div className="animate-fade-in-right" style={{ animationDelay: '0.2s' }}>
+          <AgentRace agents={agents} />
+        </div>
+        
+        {/* Transaction Table */}
+        <div className="animate-fade-in-right" style={{ animationDelay: '0.3s' }}>
+          <TransactionTable agents={agents} />
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
