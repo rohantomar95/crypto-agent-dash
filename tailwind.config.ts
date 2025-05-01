@@ -148,6 +148,10 @@ export default {
           '0%': { boxShadow: '0 0 0 0 rgba(255, 255, 255, 0.7)' },
           '70%': { boxShadow: '0 0 0 10px rgba(255, 255, 255, 0)' },
           '100%': { boxShadow: '0 0 0 0 rgba(255, 255, 255, 0)' }
+        },
+        'smooth-move': {
+          '0%': { transform: 'translateY(var(--from-y))' },
+          '100%': { transform: 'translateY(var(--to-y))' }
         }
       },
       animation: {
@@ -167,7 +171,8 @@ export default {
         'glow': 'glow 3s ease-in-out infinite',
         'smooth-slide': 'smooth-slide 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards',
         'smooth-value-change': 'smooth-value-change 0.7s ease-out forwards',
-        'trade-pulse': 'trade-pulse 1s ease-out forwards'
+        'trade-pulse': 'trade-pulse 1s ease-out forwards',
+        'smooth-move': 'smooth-move 1s cubic-bezier(0.22, 1, 0.36, 1) forwards'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
