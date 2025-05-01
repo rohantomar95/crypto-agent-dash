@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -113,6 +112,10 @@ export default {
           from: { opacity: '0', transform: 'translateY(10px)' },
           to: { opacity: '1', transform: 'translateY(0)' }
         },
+        'fade-in-down': {
+          from: { opacity: '0', transform: 'translateY(-10px)' },
+          to: { opacity: '1', transform: 'translateY(0)' }
+        },
         'scale-in': {
           from: { transform: 'scale(0.95)', opacity: '0' },
           to: { transform: 'scale(1)', opacity: '1' }
@@ -143,6 +146,7 @@ export default {
         'race-move': 'race-move 1s ease-out forwards',
         'fade-in-right': 'fade-in-right 0.5s ease-out forwards',
         'fade-in-up': 'fade-in-up 0.4s ease-out forwards',
+        'fade-in-down': 'fade-in-down 0.5s ease-out forwards',
         'scale-in': 'scale-in 0.3s ease-out forwards',
         'candle-appear': 'candle-appear 0.3s ease-out forwards',
         'marker-pulse': 'marker-pulse 2s ease-in-out infinite',

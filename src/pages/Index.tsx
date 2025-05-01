@@ -21,7 +21,7 @@ const Index = () => {
           />
         </div>
         
-        {/* Agent Race - Now with multiple visualization modes including horizontal */}
+        {/* Agent Race - Now with bar race visualization mode */}
         <div className="animate-fade-in-right" style={{ animationDelay: '0.2s' }}>
           <AgentRace agents={agents} />
         </div>
