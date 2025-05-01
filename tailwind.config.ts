@@ -113,6 +113,10 @@ export default {
           from: { opacity: '0', transform: 'translateY(10px)' },
           to: { opacity: '1', transform: 'translateY(0)' }
         },
+        'scale-in': {
+          from: { transform: 'scale(0.95)', opacity: '0' },
+          to: { transform: 'scale(1)', opacity: '1' }
+        },
         'candle-appear': {
           from: { opacity: '0', transform: 'scaleY(0.5)' },
           to: { opacity: '1', transform: 'scaleY(1)' }
@@ -120,6 +124,14 @@ export default {
         'marker-pulse': {
           '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
           '50%': { transform: 'scale(1.2)', opacity: '1' }
+        },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' }
+        },
+        'glow': {
+          '0%, 100%': { boxShadow: '0 0 15px 0px rgba(155, 135, 245, 0.4)' },
+          '50%': { boxShadow: '0 0 25px 5px rgba(155, 135, 245, 0.7)' }
         }
       },
       animation: {
@@ -131,8 +143,11 @@ export default {
         'race-move': 'race-move 1s ease-out forwards',
         'fade-in-right': 'fade-in-right 0.5s ease-out forwards',
         'fade-in-up': 'fade-in-up 0.4s ease-out forwards',
+        'scale-in': 'scale-in 0.3s ease-out forwards',
         'candle-appear': 'candle-appear 0.3s ease-out forwards',
-        'marker-pulse': 'marker-pulse 2s ease-in-out infinite'
+        'marker-pulse': 'marker-pulse 2s ease-in-out infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'glow': 'glow 3s ease-in-out infinite'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
