@@ -24,15 +24,6 @@ export interface Transaction {
   price: number;
 }
 
-export interface CandleData {
-  timestamp: Date;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-}
-
 // Sample agent names and colors
 const agentInfo = [
   { name: "AlphaBot", color: "#9b87f5" },
@@ -171,3 +162,12 @@ export const useTradeData = () => {
   
   return { agents, candles, latestCandle, showMarker };
 };
+
+export interface CandleData {
+  timestamp: Date;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}

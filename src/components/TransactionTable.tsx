@@ -172,7 +172,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ agents }) => {
                         <div className="grid grid-cols-2 gap-1 text-xs">
                           <div className="flex flex-col">
                             <span className="text-muted-foreground">Cash:</span>
-                            <span className="font-mono">{formatCurrency(transaction.agent.cashBalance)}</span>
+                            <span className="font-mono">{formatCurrency(agent.cashBalance)}</span>
                           </div>
                           <div className="flex flex-col">
                             <span className="text-muted-foreground">Tokens:</span>
