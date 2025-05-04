@@ -59,7 +59,7 @@
 
 @layer components {
   .glass-card {
-    @apply bg-card/80 backdrop-blur-md border border-white/10 shadow-lg;
+    @apply bg-card/80 backdrop-blur-md border border-white/10 shadow-md;
   }
   
   .crypto-gradient-text {
@@ -72,10 +72,6 @@
   
   .grid-bg {
     @apply bg-grid-pattern bg-[length:30px_30px];
-  }
-  
-  .glow-effect {
-    @apply before:absolute before:inset-0 before:bg-glow-purple before:rounded-lg before:-z-10;
   }
   
   .candle-up {

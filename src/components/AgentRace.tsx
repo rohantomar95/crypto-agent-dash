@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentData, TradeAction } from '@/hooks/useTradeData';
@@ -120,7 +119,7 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
   };
 
   return (
-    <Card className="glass-card overflow-hidden border-[#9b87f5]/30 shadow-neon bg-[#131624]/90">
+    <Card className="glass-card border-[#9b87f5]/20 bg-[#131624]/90">
       <CardHeader className="pb-2 bg-gradient-to-r from-[#9b87f5]/20 to-transparent flex flex-row justify-between items-center">
         <CardTitle className="text-lg font-bold flex items-center gap-2 text-white">
           <div className="h-2 w-2 bg-[#9b87f5] rounded-full animate-pulse-glow"></div>
@@ -192,14 +191,12 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                       style={{ 
                         width: `${progressPercentage}%`,
                         backgroundColor: color,
-                        boxShadow: `0 0 10px ${color}, 0 0 15px ${color}40`,
                       }}
                     >
-                      {/* No shimmer animation here */}
                     </div>
                     
-                    {/* Value Text */}
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-xs font-bold text-gray-300">
+                    {/* Value Text - Now more prominent */}
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold text-white z-10">
                       {formatCurrency(agent.portfolioValue)}
                     </div>
                     
