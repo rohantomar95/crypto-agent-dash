@@ -54,14 +54,16 @@ export default {
           foreground: 'hsl(var(--card-foreground))'
         },
         crypto: {
-          'purple': '#9b87f5', // Updated to match the image
-          'purple-dark': '#8277e0', // Darker shade
-          'blue': '#55b7fd',  // Updated to match the image
+          'purple': '#9b87f5', // Primary Purple
+          'purple-medium': '#7E69AB', // Secondary Purple
+          'purple-dark': '#6E59A5', // Tertiary Purple
+          'blue-dark': '#0EA5E9', // Ocean Blue
+          'blue-light': '#33C3F0', // Sky Blue
           'orange': '#F97316',
           'green': '#10B981',
           'red': '#EF4444',
-          'gray-dark': '#131624', // Updated to match the screenshot
-          'gray-light': '#1e293b', // Adjusted for theme
+          'gray-dark': '#131624',
+          'gray-light': '#1e293b',
         },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',

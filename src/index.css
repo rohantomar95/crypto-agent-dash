@@ -63,7 +63,7 @@
   }
   
   .crypto-gradient-text {
-    @apply bg-gradient-to-r from-[#9b87f5] to-[#55b7fd] bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-[#9b87f5] to-[#33C3F0] bg-clip-text text-transparent;
   }
   
   .crypto-accent-border {

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 // Define our data types
@@ -25,13 +24,13 @@ export interface Transaction {
   price: number;
 }
 
-// Sample agent names and colors
+// Sample agent names with enhanced color scheme - distinct shades of blue and purple
 const agentInfo = [
-  { name: "AlphaBot", color: "#9b87f5" },
-  { name: "TradeMaster", color: "#0EA5E9" },
-  { name: "QuantumAI", color: "#F97316" },
-  { name: "NexusTrader", color: "#10B981" },
-  { name: "CryptoOracle", color: "#EF4444" }
+  { name: "AlphaBot", color: "#9b87f5" },     // Primary Purple
+  { name: "TradeMaster", color: "#7E69AB" },  // Secondary Purple
+  { name: "QuantumAI", color: "#6E59A5" },    // Tertiary Purple
+  { name: "NexusTrader", color: "#0EA5E9" },  // Ocean Blue
+  { name: "CryptoOracle", color: "#33C3F0" }  // Sky Blue
 ];
 
 // Generate random price between min and max

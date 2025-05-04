@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentData, TradeAction } from '@/hooks/useTradeData';
@@ -14,13 +15,13 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
   const [prevPositions, setPrevPositions] = useState<{[key: number]: number}>({});
   const [positions, setPositions] = useState<{[key: number]: number}>({});
   
-  // Theme colors from the gradient in the image
+  // Enhanced color palette with distinct dark and light shades
   const themeColors = [
-    '#9b87f5', // Purple
-    '#8b93f7', // Purple-blue
-    '#7ba0f9', // Blue-ish purple
-    '#67abfb', // Light blue
-    '#55b7fd', // Sky blue
+    '#9b87f5', // Primary Purple
+    '#7E69AB', // Secondary Purple
+    '#6E59A5', // Tertiary Purple
+    '#0EA5E9', // Ocean Blue
+    '#33C3F0', // Sky Blue
   ];
   
   // Calculate max portfolio value and sort agents by portfolio value
@@ -195,9 +196,11 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                     >
                     </div>
                     
-                    {/* Value Text - Now more prominent */}
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold text-white z-10">
-                      {formatCurrency(agent.portfolioValue)}
+                    {/* Value Text - More prominent with background for contrast */}
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold z-10">
+                      <span className="bg-[#131624]/80 px-1.5 py-0.5 rounded text-white backdrop-blur-sm">
+                        {formatCurrency(agent.portfolioValue)}
+                      </span>
                     </div>
                     
                     {/* Position Change Indicator */}
