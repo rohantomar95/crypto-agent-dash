@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentData, TradeAction } from '@/hooks/useTradeData';
@@ -13,6 +14,15 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
   const [prevValues, setPrevValues] = useState<{[key: number]: number}>({});
   const [prevPositions, setPrevPositions] = useState<{[key: number]: number}>({});
   const [positions, setPositions] = useState<{[key: number]: number}>({});
+  
+  // Theme colors from the gradient in the image
+  const themeColors = [
+    '#9b87f5', // Purple
+    '#8b93f7', // Purple-blue
+    '#7ba0f9', // Blue-ish purple
+    '#67abfb', // Light blue
+    '#55b7fd', // Sky blue
+  ];
   
   // Calculate max portfolio value and sort agents by portfolio value
   useEffect(() => {
@@ -34,6 +44,10 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
     // Update positions map for each agent
     const newPositions: {[key: number]: number} = {};
     sorted.forEach((agent, index) => {
+      // Assign theme colors based on position
+      const colorIndex = index % themeColors.length;
+      agent.color = themeColors[colorIndex];
+      
       newPositions[agent.id] = index;
     });
     
@@ -106,14 +120,14 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
   };
 
   return (
-    <Card className="glass-card overflow-hidden border-[#6366f1]/30 shadow-neon bg-[#131624]/90">
-      <CardHeader className="pb-2 bg-gradient-to-r from-[#6366f1]/20 to-transparent flex flex-row justify-between items-center">
+    <Card className="glass-card overflow-hidden border-[#9b87f5]/30 shadow-neon bg-[#131624]/90">
+      <CardHeader className="pb-2 bg-gradient-to-r from-[#9b87f5]/20 to-transparent flex flex-row justify-between items-center">
         <CardTitle className="text-lg font-bold flex items-center gap-2 text-white">
-          <div className="h-2 w-2 bg-[#6366f1] rounded-full animate-pulse-glow"></div>
+          <div className="h-2 w-2 bg-[#9b87f5] rounded-full animate-pulse-glow"></div>
           Agent Performance
         </CardTitle>
-        <div className="bg-[#6366f1]/20 rounded-full p-1.5">
-          <BarChart size={16} className="text-[#6366f1]" />
+        <div className="bg-[#9b87f5]/20 rounded-full p-1.5">
+          <BarChart size={16} className="text-[#9b87f5]" />
         </div>
       </CardHeader>
       <CardContent className="p-3">
@@ -130,6 +144,9 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
               const positionChange = getPositionChange(agent.id, position);
               const isProfit = agent.portfolioValue >= 100000;
               const netPosition = getNetPosition(agent);
+              
+              // Get the agent color from the theme colors
+              const color = agent.color || themeColors[position % themeColors.length];
               
               return (
                 <div 
@@ -174,11 +191,11 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                       className="absolute inset-y-0 left-0 rounded-md transition-all duration-1000 ease-out flex items-center"
                       style={{ 
                         width: `${progressPercentage}%`,
-                        backgroundColor: agent.color,
-                        boxShadow: `0 0 10px ${agent.color}, 0 0 15px ${agent.color}40`,
+                        backgroundColor: color,
+                        boxShadow: `0 0 10px ${color}, 0 0 15px ${color}40`,
                       }}
                     >
-                      {/* Remove the shimmer animation from here */}
+                      {/* No shimmer animation here */}
                     </div>
                     
                     {/* Value Text */}

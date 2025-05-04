@@ -63,11 +63,11 @@
   }
   
   .crypto-gradient-text {
-    @apply bg-gradient-to-r from-crypto-purple to-crypto-blue bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-[#9b87f5] to-[#55b7fd] bg-clip-text text-transparent;
   }
   
   .crypto-accent-border {
-    @apply border border-crypto-purple/30 hover:border-crypto-purple/50 transition-colors;
+    @apply border border-[#9b87f5]/30 hover:border-[#9b87f5]/50 transition-colors;
   }
   
   .grid-bg {
@@ -79,10 +79,10 @@
   }
   
   .candle-up {
-    @apply bg-crypto-green;
+    @apply bg-green-500;
   }
   
   .candle-down {
-    @apply bg-crypto-red;
+    @apply bg-red-500;
   }
 }

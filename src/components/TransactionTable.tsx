@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentData, TradeAction } from '@/hooks/useTradeData';
@@ -9,6 +8,15 @@ interface TransactionTableProps {
 }
 
 const TransactionTable: React.FC<TransactionTableProps> = ({ agents }) => {
+  // Theme colors from the gradient in the image
+  const themeColors = [
+    '#9b87f5', // Purple
+    '#8b93f7', // Purple-blue
+    '#7ba0f9', // Blue-ish purple
+    '#67abfb', // Light blue
+    '#55b7fd', // Sky blue
+  ];
+  
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -64,16 +72,16 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ agents }) => {
       case 'long':
         return {
           icon: <ArrowUp size={16} />,
-          bgClass: 'from-crypto-green/20 to-crypto-green/5',
-          borderClass: 'border-crypto-green/40',
-          textClass: 'text-crypto-green'
+          bgClass: 'from-green-500/20 to-green-500/5',
+          borderClass: 'border-green-500/40',
+          textClass: 'text-green-500'
         };
       case 'short':
         return {
           icon: <ArrowDown size={16} />,
-          bgClass: 'from-crypto-red/20 to-crypto-red/5',
-          borderClass: 'border-crypto-red/40',
-          textClass: 'text-crypto-red'
+          bgClass: 'from-red-500/20 to-red-500/5',
+          borderClass: 'border-red-500/40',
+          textClass: 'text-red-500'
         };
       case 'hold':
       default:
@@ -89,28 +97,33 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ agents }) => {
   const groupedTransactions = getGroupedTransactions();
   
   return (
-    <Card className="glass-card border-crypto-purple/20 overflow-hidden">
-      <CardHeader className="pb-2 bg-gradient-to-r from-crypto-purple/20 to-transparent border-b border-crypto-purple/20">
-        <CardTitle className="text-lg font-bold crypto-gradient-text flex items-center gap-2">
-          <div className="h-2 w-2 bg-crypto-purple rounded-full animate-pulse"></div>
+    <Card className="glass-card border-[#9b87f5]/20 overflow-hidden">
+      <CardHeader className="pb-2 bg-gradient-to-r from-[#9b87f5]/20 to-transparent border-b border-[#9b87f5]/20">
+        <CardTitle className="text-lg font-bold flex items-center gap-2 text-white">
+          <div className="h-2 w-2 bg-[#9b87f5] rounded-full animate-pulse"></div>
           Agent Transactions
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         {/* Agent columns header */}
         <div className="grid grid-cols-5 gap-1 p-1 bg-card/80 border-b border-white/5">
-          {agents.map((agent) => (
-            <div 
-              key={agent.id} 
-              className="p-3 flex items-center gap-2 justify-center"
-            >
+          {agents.map((agent, index) => {
+            // Get the agent color from the theme colors
+            const color = agent.color || themeColors[index % themeColors.length];
+            
+            return (
               <div 
-                className="h-3 w-3 rounded-full animate-pulse" 
-                style={{ backgroundColor: agent.color }}
-              ></div>
-              <h3 className="font-bold text-sm">{agent.name}</h3>
-            </div>
-          ))}
+                key={agent.id} 
+                className="p-3 flex items-center gap-2 justify-center"
+              >
+                <div 
+                  className="h-3 w-3 rounded-full animate-pulse" 
+                  style={{ backgroundColor: color }}
+                ></div>
+                <h3 className="font-bold text-sm">{agent.name}</h3>
+              </div>
+            );
+          })}
         </div>
         
         {/* Transaction rows */}
