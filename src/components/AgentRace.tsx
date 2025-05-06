@@ -178,8 +178,8 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                             #{position + 1}
                           </div>
                           
-                          {/* Agent Name */}
-                          <div className="relative text-left">
+                          {/* Agent Name with Your Agent badge */}
+                          <div className="text-left">
                             <div className="text-sm font-semibold truncate text-white flex items-center gap-1">
                               {agent.name}
                               {isYourAgent && (
@@ -190,14 +190,89 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                             </div>
                           </div>
                         </div>
+                      </div>
+                      
+                      {/* Position and Amount on same row under name */}
+                      <div className="flex items-center justify-between w-full gap-2">
+                        {/* Position indicator */}
+                        <div className={`flex items-center justify-center ${
+                          netPosition === 'long' ? 'bg-green-500' : 
+                          netPosition === 'short' ? 'bg-red-500' : 
+                          'bg-gray-500'
+                        } text-white text-xs font-semibold px-2 py-1 rounded min-w-[50px]`}>
+                          <span className="flex items-center gap-1">
+                            {netPosition === 'long' && <TrendingUp size={12} />}
+                            {netPosition === 'short' && <TrendingDown size={12} />}
+                            {netPosition.toUpperCase()}
+                          </span>
+                        </div>
                         
-                        <div className="flex items-center gap-2">
+                        {/* Amount indicator */}
+                        <div className="bg-[#1e293b] text-white text-xs font-mono px-2 py-1 rounded min-w-[80px] text-center">
+                          {formatCurrency(latestAmount)}
+                        </div>
+                        
+                        {/* Bar Container - Full width on mobile */}
+                        <div className="flex-1 relative h-6">
+                          {/* Background Bar */}
+                          <div className="absolute inset-y-0 left-0 right-0 bg-[#1e293b]/50 rounded-md"></div>
+                          
+                          {/* Value Bar */}
+                          <div 
+                            className="absolute inset-y-0 left-0 rounded-md transition-all duration-1000 ease-out"
+                            style={{ 
+                              width: `${progressPercentage}%`,
+                              background: `linear-gradient(90deg, ${color}, ${color === '#9b87f5' ? '#33C3F0' : '#9b87f5'})`,
+                            }}
+                          >
+                          </div>
+                          
+                          {/* Value Text - Prominent with background for contrast */}
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold z-10">
+                            <span className="bg-[#131624]/95 px-2 py-0.5 rounded text-white backdrop-blur-sm shadow-md border border-white/10">
+                              {formatCurrency(agent.portfolioValue)}
+                            </span>
+                          </div>
+                          
+                          {/* Position Change Indicator */}
+                          <div className={`absolute -right-7 top-1/2 -translate-y-1/2 flex items-center
+                            ${isProfit ? 'text-green-500' : 'text-red-500'}`}
+                          >
+                            {positionChange === 'up' && <ArrowUp size={14} className="animate-bounce" />}
+                            {positionChange === 'down' && <ArrowDown size={14} className="animate-bounce" />}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Desktop layout - horizontal with position and amount next to name */}
+                      <div className="flex items-center gap-3">
+                        {/* Rank indicator */}
+                        <div className="min-w-[30px] text-center flex justify-center items-center font-mono text-xs text-gray-400">
+                          #{position + 1}
+                        </div>
+                        
+                        {/* Group: Agent Name + Your Agent badge + Position + Amount */}
+                        <div className="flex items-center gap-3 w-[350px]">
+                          {/* Agent Name with Your Agent badge */}
+                          <div className="w-[150px] text-left">
+                            <div className="text-sm font-semibold truncate text-white flex items-center gap-1">
+                              {agent.name}
+                              {isYourAgent && (
+                                <span className="bg-[#9b87f5] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full ml-1">
+                                  Your Agent
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
                           {/* Position indicator */}
                           <div className={`flex items-center justify-center ${
                             netPosition === 'long' ? 'bg-green-500' : 
                             netPosition === 'short' ? 'bg-red-500' : 
                             'bg-gray-500'
-                          } text-white text-xs font-semibold px-2 py-1 rounded min-w-[50px]`}>
+                          } text-white text-xs font-semibold px-2 py-1 rounded min-w-[70px]`}>
                             <span className="flex items-center gap-1">
                               {netPosition === 'long' && <TrendingUp size={12} />}
                               {netPosition === 'short' && <TrendingDown size={12} />}
@@ -210,111 +285,36 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                             {formatCurrency(latestAmount)}
                           </div>
                         </div>
-                      </div>
-                      
-                      {/* Bar Container - Full width on mobile */}
-                      <div className="w-full relative h-6 mt-1">
-                        {/* Background Bar */}
-                        <div className="absolute inset-y-0 left-0 right-0 bg-[#1e293b]/50 rounded-md"></div>
                         
-                        {/* Value Bar */}
-                        <div 
-                          className="absolute inset-y-0 left-0 rounded-md transition-all duration-1000 ease-out"
-                          style={{ 
-                            width: `${progressPercentage}%`,
-                            background: `linear-gradient(90deg, ${color}, ${color === '#9b87f5' ? '#33C3F0' : '#9b87f5'})`,
-                          }}
-                        >
-                        </div>
-                        
-                        {/* Value Text - Prominent with background for contrast */}
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold z-10">
-                          <span className="bg-[#131624]/95 px-2 py-0.5 rounded text-white backdrop-blur-sm shadow-md border border-white/10">
-                            {formatCurrency(agent.portfolioValue)}
-                          </span>
-                        </div>
-                        
-                        {/* Position Change Indicator */}
-                        <div className={`absolute -right-7 top-1/2 -translate-y-1/2 flex items-center
-                          ${isProfit ? 'text-green-500' : 'text-red-500'}`}
-                        >
-                          {positionChange === 'up' && <ArrowUp size={14} className="animate-bounce" />}
-                          {positionChange === 'down' && <ArrowDown size={14} className="animate-bounce" />}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    // Desktop layout - horizontal
-                    <>
-                      {/* Rank indicator */}
-                      <div className="min-w-[30px] text-center flex justify-center items-center font-mono text-xs text-gray-400">
-                        #{position + 1}
-                      </div>
-                      
-                      {/* Agent Name with "Your Agent" badge first */}
-                      <div className="relative w-[150px] text-left flex items-center gap-1">
-                        <div className="relative">
-                          <div className="text-sm font-semibold truncate text-white">
-                            {agent.name}
+                        {/* Bar Container */}
+                        <div className="flex-1 relative h-6">
+                          {/* Background Bar */}
+                          <div className="absolute inset-y-0 left-0 right-0 bg-[#1e293b]/50 rounded-md"></div>
+                          
+                          {/* Value Bar */}
+                          <div 
+                            className="absolute inset-y-0 left-0 rounded-md transition-all duration-1000 ease-out"
+                            style={{ 
+                              width: `${progressPercentage}%`,
+                              background: `linear-gradient(90deg, ${color}, ${color === '#9b87f5' ? '#33C3F0' : '#9b87f5'})`,
+                            }}
+                          >
                           </div>
                           
-                          {/* Your Agent badge */}
-                          {isYourAgent && (
-                            <div className="absolute -bottom-4 left-0">
-                              <div className="bg-[#9b87f5] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit">
-                                Your Agent
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Position indicator */}
-                      <div className={`flex items-center justify-center ${
-                        netPosition === 'long' ? 'bg-green-500' : 
-                        netPosition === 'short' ? 'bg-red-500' : 
-                        'bg-gray-500'
-                      } text-white text-xs font-semibold px-2 py-1 rounded min-w-[70px]`}>
-                        <span className="flex items-center gap-1">
-                          {netPosition === 'long' && <TrendingUp size={12} />}
-                          {netPosition === 'short' && <TrendingDown size={12} />}
-                          {netPosition.toUpperCase()}
-                        </span>
-                      </div>
-                      
-                      {/* Amount indicator */}
-                      <div className="bg-[#1e293b] text-white text-xs font-mono px-2 py-1 rounded min-w-[80px] text-center">
-                        {formatCurrency(latestAmount)}
-                      </div>
-                      
-                      {/* Bar Container */}
-                      <div className="flex-1 relative h-6">
-                        {/* Background Bar */}
-                        <div className="absolute inset-y-0 left-0 right-0 bg-[#1e293b]/50 rounded-md"></div>
-                        
-                        {/* Value Bar */}
-                        <div 
-                          className="absolute inset-y-0 left-0 rounded-md transition-all duration-1000 ease-out"
-                          style={{ 
-                            width: `${progressPercentage}%`,
-                            background: `linear-gradient(90deg, ${color}, ${color === '#9b87f5' ? '#33C3F0' : '#9b87f5'})`,
-                          }}
-                        >
-                        </div>
-                        
-                        {/* Value Text - More prominent with background for contrast */}
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold z-10">
-                          <span className="bg-[#131624]/95 px-2 py-0.5 rounded text-white backdrop-blur-sm shadow-md border border-white/10">
-                            {formatCurrency(agent.portfolioValue)}
-                          </span>
-                        </div>
-                        
-                        {/* Position Change Indicator */}
-                        <div className={`absolute -right-7 top-1/2 -translate-y-1/2 flex items-center
-                          ${isProfit ? 'text-green-500' : 'text-red-500'}`}
-                        >
-                          {positionChange === 'up' && <ArrowUp size={14} className="animate-bounce" />}
-                          {positionChange === 'down' && <ArrowDown size={14} className="animate-bounce" />}
+                          {/* Value Text - More prominent with background for contrast */}
+                          <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold z-10">
+                            <span className="bg-[#131624]/95 px-2 py-0.5 rounded text-white backdrop-blur-sm shadow-md border border-white/10">
+                              {formatCurrency(agent.portfolioValue)}
+                            </span>
+                          </div>
+                          
+                          {/* Position Change Indicator */}
+                          <div className={`absolute -right-7 top-1/2 -translate-y-1/2 flex items-center
+                            ${isProfit ? 'text-green-500' : 'text-red-500'}`}
+                          >
+                            {positionChange === 'up' && <ArrowUp size={14} className="animate-bounce" />}
+                            {positionChange === 'down' && <ArrowDown size={14} className="animate-bounce" />}
+                          </div>
                         </div>
                       </div>
                     </>
