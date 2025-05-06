@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentData, TradeAction } from '@/hooks/useTradeData';
-import { ArrowUp, ArrowDown, BarChart, TrendingUp, TrendingDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, TrendingUp, TrendingDown, BarChart } from 'lucide-react';
 
 interface AgentRaceProps {
   agents: AgentData[];
@@ -115,8 +115,14 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
     );
     
     if (positions.long > positions.short) return 'long';
-    if (positions.short > positions.long) return 'long';
+    if (positions.short > positions.long) return 'short';
     return 'neutral';
+  };
+
+  // Get latest transaction amount for display
+  const getLatestAmount = (agent: AgentData): number => {
+    if (!agent.transactions || agent.transactions.length === 0) return 0;
+    return agent.transactions[0].amount;
   };
 
   return (
@@ -136,24 +142,28 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
           <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
           
           {/* Agent List Container with fixed height for smooth transitions */}
-          <div className="relative" style={{ height: `${sortedAgents.length * 40}px` }}>
-            {agents.map(agent => {
+          <div className="relative" style={{ height: `${sortedAgents.length * 44}px` }}>
+            {agents.map((agent, index) => {
               const progressPercentage = (agent.portfolioValue / maxValue) * 100;
               const trend = getValueTrend(agent.id, agent.portfolioValue);
               const position = positions[agent.id] || 0;
               const positionChange = getPositionChange(agent.id, position);
               const isProfit = agent.portfolioValue >= 100000;
               const netPosition = getNetPosition(agent);
+              const latestAmount = getLatestAmount(agent);
               
               // Get the agent color from the theme colors
               const color = agent.color || themeColors[position % themeColors.length];
               
+              // Set the 4th agent as "Your Agent" (position 3)
+              const isYourAgent = position === 3;
+              
               return (
                 <div 
                   key={agent.id} 
-                  className="absolute left-0 right-0 flex items-center gap-4 transition-transform duration-1000 ease-out"
+                  className="absolute left-0 right-0 flex items-center gap-3 transition-transform duration-1000 ease-out"
                   style={{ 
-                    transform: `translateY(${position * 40}px)`,
+                    transform: `translateY(${position * 44}px)`,
                   }}
                 >
                   {/* Rank indicator */}
@@ -161,23 +171,54 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                     #{position + 1}
                   </div>
                   
+                  {/* Position and amount indicators */}
+                  <div className={`hidden sm:flex items-center justify-center ${
+                    netPosition === 'long' ? 'bg-green-500' : 
+                    netPosition === 'short' ? 'bg-red-500' : 
+                    'bg-gray-500'
+                  } text-white text-xs font-semibold px-2 py-1 rounded min-w-[70px]`}>
+                    <span className="flex items-center gap-1">
+                      {netPosition === 'long' && <TrendingUp size={12} />}
+                      {netPosition === 'short' && <TrendingDown size={12} />}
+                      {netPosition.toUpperCase()}
+                    </span>
+                  </div>
+                  
+                  {/* Amount indicator (hidden on extra small screens) */}
+                  <div className="hidden md:block bg-[#1e293b] text-white text-xs font-mono px-2 py-1 rounded min-w-[80px] text-center">
+                    {formatCurrency(latestAmount)}
+                  </div>
+                  
                   {/* Agent Name with position indicator */}
-                  <div className="w-[120px] text-left flex items-center gap-1.5">
-                    {/* Net position indicator */}
-                    {netPosition === 'long' && (
-                      <TrendingUp 
-                        size={14} 
-                        className="text-green-500"
-                      />
-                    )}
-                    {netPosition === 'short' && (
-                      <TrendingDown 
-                        size={14} 
-                        className="text-red-500"
-                      />
-                    )}
-                    <div className="text-sm font-semibold truncate text-white">
-                      {agent.name}
+                  <div className="relative w-[120px] text-left flex items-center gap-1">
+                    {/* Net position indicator (only visible on mobile) */}
+                    <div className="sm:hidden">
+                      {netPosition === 'long' && (
+                        <TrendingUp 
+                          size={14} 
+                          className="text-green-500"
+                        />
+                      )}
+                      {netPosition === 'short' && (
+                        <TrendingDown 
+                          size={14} 
+                          className="text-red-500"
+                        />
+                      )}
+                    </div>
+                    <div className="relative">
+                      <div className="text-sm font-semibold truncate text-white">
+                        {agent.name}
+                      </div>
+                      
+                      {/* Your Agent badge */}
+                      {isYourAgent && (
+                        <div className="absolute -bottom-4 left-0 right-0">
+                          <div className="bg-[#9b87f5] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit">
+                            Your Agent
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -198,7 +239,7 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
                     
                     {/* Value Text - More prominent with background for contrast */}
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold z-10">
-                      <span className="bg-[#131624]/80 px-1.5 py-0.5 rounded text-white backdrop-blur-sm">
+                      <span className="bg-[#131624]/90 px-1.5 py-0.5 rounded text-white backdrop-blur-sm shadow-md">
                         {formatCurrency(agent.portfolioValue)}
                       </span>
                     </div>
@@ -217,11 +258,11 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
           </div>
           
           {/* Scale marks at bottom */}
-          <div className="mt-4 border-t border-white/10 pt-2 flex justify-between px-[120px] text-xs text-gray-400">
+          <div className="mt-6 border-t border-white/10 pt-2 flex justify-between px-[120px] text-xs text-gray-400">
             <div>$0</div>
-            <div>{formatCurrency(maxValue/4)}</div>
+            <div className="hidden sm:block">{formatCurrency(maxValue/4)}</div>
             <div>{formatCurrency(maxValue/2)}</div>
-            <div>{formatCurrency(3*maxValue/4)}</div>
+            <div className="hidden sm:block">{formatCurrency(3*maxValue/4)}</div>
             <div>{formatCurrency(maxValue)}</div>
           </div>
         </div>

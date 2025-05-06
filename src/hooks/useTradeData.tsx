@@ -24,13 +24,13 @@ export interface Transaction {
   price: number;
 }
 
-// Sample agent names with enhanced color scheme - distinct shades of blue and purple
+// Sample agent names with enhanced color scheme and realistic trading names
 const agentInfo = [
-  { name: "AlphaBot", color: "#9b87f5" },     // Primary Purple
-  { name: "TradeMaster", color: "#7E69AB" },  // Secondary Purple
-  { name: "QuantumAI", color: "#6E59A5" },    // Tertiary Purple
-  { name: "NexusTrader", color: "#0EA5E9" },  // Ocean Blue
-  { name: "CryptoOracle", color: "#33C3F0" }  // Sky Blue
+  { name: "MetropolitanLandfowl", color: "#9b87f5" },  // Primary Purple
+  { name: "BetterEagle8900", color: "#7E69AB" },      // Secondary Purple
+  { name: "EmbarrassedAnteater5", color: "#6E59A5" }, // Tertiary Purple
+  { name: "JealousDove3996", color: "#0EA5E9" },      // Ocean Blue
+  { name: "YammeringJunglefowl7", color: "#33C3F0" }  // Sky Blue
 ];
 
 // Generate random price between min and max
@@ -119,9 +119,24 @@ export const useTradeData = () => {
         const positionMap = new Map(sortedAgents.map((agent, index) => [agent.id, index]));
         
         return prevAgents.map(agent => {
-          // Decide on action randomly
-          const actions: TradeAction[] = ['long', 'short', 'hold'];
-          const action = actions[Math.floor(Math.random() * actions.length)];
+          // Decide action more realistically - with bias
+          // The 4th agent (JealousDove3996 - "Your Agent") tends to short more often
+          let action: TradeAction;
+          const isYourAgent = agent.name === "JealousDove3996";
+          
+          if (isYourAgent) {
+            // Your agent has a bias toward shorting
+            const randNum = Math.random();
+            action = randNum < 0.6 ? 'short' : (randNum < 0.9 ? 'long' : 'hold');
+          } else if (agent.name === "EmbarrassedAnteater5" || agent.name === "YammeringJunglefowl7") {
+            // These agents have a bias toward longing
+            const randNum = Math.random();
+            action = randNum < 0.6 ? 'long' : (randNum < 0.9 ? 'short' : 'hold');
+          } else {
+            // Others are more balanced
+            const actions: TradeAction[] = ['long', 'short', 'hold'];
+            action = actions[Math.floor(Math.random() * actions.length)];
+          }
           
           // Calculate amount (10-20% of cash balance)
           const amount = action !== 'hold' 
@@ -146,12 +161,12 @@ export const useTradeData = () => {
             ? agent.cashBalance 
             : agent.cashBalance - amount;
           
-          // Create new transaction
+          // Create new transaction with realistic amount ranges
           const newTransaction = {
             id: `${agent.id}-${Date.now()}`,
             timestamp: new Date(),
             action,
-            amount,
+            amount: action !== 'hold' ? Math.floor(9000 + Math.random() * 42000) : 0, // Amount between $9,000 and $51,000
             price: candles.length > 0 ? candles[candles.length - 1].close : initialPrice
           };
           
@@ -160,7 +175,7 @@ export const useTradeData = () => {
             targetPortfolioValue: newTargetValue,
             cashBalance: newCashBalance,
             lastAction: action,
-            lastAmount: amount,
+            lastAmount: newTransaction.amount,
             profitLoss,
             transactions: [newTransaction, ...agent.transactions.slice(0, 9)] // Keep only the 10 most recent
           };
