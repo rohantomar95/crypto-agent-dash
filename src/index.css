@@ -81,4 +81,41 @@
   .candle-down {
     @apply bg-red-500;
   }
+  
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    .glass-card {
+      @apply rounded-lg;
+    }
+    
+    .crypto-text-mobile {
+      @apply text-sm;
+    }
+  }
+  
+  /* Animation for agent value changes */
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s infinite;
+  }
+  
+  /* Enhanced fade in animations */
+  @keyframes fade-in-right {
+    0% {
+      opacity: 0;
+      transform: translateX(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .animate-fade-in-right {
+    animation: fade-in-right 0.5s ease-out forwards;
+  }
 }

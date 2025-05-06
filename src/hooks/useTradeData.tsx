@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 // Define our data types
@@ -29,7 +30,7 @@ const agentInfo = [
   { name: "MetropolitanLandfowl", color: "#9b87f5" },  // Primary Purple
   { name: "BetterEagle8900", color: "#7E69AB" },      // Secondary Purple
   { name: "EmbarrassedAnteater5", color: "#6E59A5" }, // Tertiary Purple
-  { name: "JealousDove3996", color: "#0EA5E9" },      // Ocean Blue
+  { name: "JealousDove3996", color: "#0EA5E9" },      // Ocean Blue - this is "Your Agent"
   { name: "YammeringJunglefowl7", color: "#33C3F0" }  // Sky Blue
 ];
 
@@ -120,7 +121,7 @@ export const useTradeData = () => {
         
         return prevAgents.map(agent => {
           // Decide action more realistically - with bias
-          // The 4th agent (JealousDove3996 - "Your Agent") tends to short more often
+          // JealousDove3996 is "Your Agent" with a bias toward shorting
           let action: TradeAction;
           const isYourAgent = agent.name === "JealousDove3996";
           

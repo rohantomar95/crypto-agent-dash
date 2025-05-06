@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentData, TradeAction } from '@/hooks/useTradeData';
 import { ArrowUp, ArrowDown, TrendingUp, TrendingDown, BarChart } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AgentRaceProps {
   agents: AgentData[];
@@ -14,6 +15,7 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
   const [prevValues, setPrevValues] = useState<{[key: number]: number}>({});
   const [prevPositions, setPrevPositions] = useState<{[key: number]: number}>({});
   const [positions, setPositions] = useState<{[key: number]: number}>({});
+  const isMobile = useIsMobile();
   
   // Enhanced color palette with distinct dark and light shades
   const themeColors = [
@@ -70,7 +72,7 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
     }, 1000);
     
     return () => clearTimeout(animationTimeout);
-  }, [agents]);
+  }, [agents, prevValues, prevPositions]);
   
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -142,7 +144,7 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
           <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
           
           {/* Agent List Container with fixed height for smooth transitions */}
-          <div className="relative" style={{ height: `${sortedAgents.length * 44}px` }}>
+          <div className="relative" style={{ height: `${sortedAgents.length * (isMobile ? 72 : 44)}px` }}>
             {agents.map((agent, index) => {
               const progressPercentage = (agent.portfolioValue / maxValue) * 100;
               const trend = getValueTrend(agent.id, agent.portfolioValue);
@@ -156,102 +158,167 @@ const AgentRace: React.FC<AgentRaceProps> = ({ agents }) => {
               const color = agent.color || themeColors[position % themeColors.length];
               
               // Set the 4th agent as "Your Agent" (position 3)
-              const isYourAgent = position === 3;
+              const isYourAgent = agent.name === "JealousDove3996";
               
               return (
                 <div 
                   key={agent.id} 
-                  className="absolute left-0 right-0 flex items-center gap-3 transition-transform duration-1000 ease-out"
+                  className={`absolute left-0 right-0 transition-transform duration-1000 ease-out ${isMobile ? 'flex flex-col gap-1 py-2' : 'flex items-center gap-3'}`}
                   style={{ 
-                    transform: `translateY(${position * 44}px)`,
+                    transform: `translateY(${position * (isMobile ? 72 : 44)}px)`,
                   }}
                 >
-                  {/* Rank indicator */}
-                  <div className="min-w-[30px] text-center flex justify-center items-center font-mono text-xs text-gray-400">
-                    #{position + 1}
-                  </div>
-                  
-                  {/* Position and amount indicators */}
-                  <div className={`hidden sm:flex items-center justify-center ${
-                    netPosition === 'long' ? 'bg-green-500' : 
-                    netPosition === 'short' ? 'bg-red-500' : 
-                    'bg-gray-500'
-                  } text-white text-xs font-semibold px-2 py-1 rounded min-w-[70px]`}>
-                    <span className="flex items-center gap-1">
-                      {netPosition === 'long' && <TrendingUp size={12} />}
-                      {netPosition === 'short' && <TrendingDown size={12} />}
-                      {netPosition.toUpperCase()}
-                    </span>
-                  </div>
-                  
-                  {/* Amount indicator (hidden on extra small screens) */}
-                  <div className="hidden md:block bg-[#1e293b] text-white text-xs font-mono px-2 py-1 rounded min-w-[80px] text-center">
-                    {formatCurrency(latestAmount)}
-                  </div>
-                  
-                  {/* Agent Name with position indicator */}
-                  <div className="relative w-[120px] text-left flex items-center gap-1">
-                    {/* Net position indicator (only visible on mobile) */}
-                    <div className="sm:hidden">
-                      {netPosition === 'long' && (
-                        <TrendingUp 
-                          size={14} 
-                          className="text-green-500"
-                        />
-                      )}
-                      {netPosition === 'short' && (
-                        <TrendingDown 
-                          size={14} 
-                          className="text-red-500"
-                        />
-                      )}
-                    </div>
-                    <div className="relative">
-                      <div className="text-sm font-semibold truncate text-white">
-                        {agent.name}
-                      </div>
-                      
-                      {/* Your Agent badge */}
-                      {isYourAgent && (
-                        <div className="absolute -bottom-4 left-0 right-0">
-                          <div className="bg-[#9b87f5] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit">
-                            Your Agent
+                  {isMobile ? (
+                    <>
+                      {/* Mobile layout - stacked vertically */}
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          {/* Rank indicator */}
+                          <div className="min-w-[25px] text-center flex justify-center items-center font-mono text-xs text-gray-400">
+                            #{position + 1}
+                          </div>
+                          
+                          {/* Agent Name */}
+                          <div className="relative text-left">
+                            <div className="text-sm font-semibold truncate text-white flex items-center gap-1">
+                              {agent.name}
+                              {isYourAgent && (
+                                <span className="bg-[#9b87f5] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full ml-1">
+                                  Your Agent
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Bar Container */}
-                  <div className="flex-1 relative h-6">
-                    {/* Background Bar */}
-                    <div className="absolute inset-y-0 left-0 right-0 bg-[#1e293b]/50 rounded-md"></div>
-                    
-                    {/* Value Bar */}
-                    <div 
-                      className="absolute inset-y-0 left-0 rounded-md transition-all duration-1000 ease-out flex items-center"
-                      style={{ 
-                        width: `${progressPercentage}%`,
-                        backgroundColor: color,
-                      }}
-                    >
-                    </div>
-                    
-                    {/* Value Text - More prominent with background for contrast */}
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold z-10">
-                      <span className="bg-[#131624]/90 px-1.5 py-0.5 rounded text-white backdrop-blur-sm shadow-md">
-                        {formatCurrency(agent.portfolioValue)}
-                      </span>
-                    </div>
-                    
-                    {/* Position Change Indicator */}
-                    <div className={`absolute -right-7 top-1/2 -translate-y-1/2 flex items-center
-                      ${isProfit ? 'text-green-500' : 'text-red-500'}`}
-                    >
-                      {positionChange === 'up' && <ArrowUp size={14} className="animate-bounce" />}
-                      {positionChange === 'down' && <ArrowDown size={14} className="animate-bounce" />}
-                    </div>
-                  </div>
+                        
+                        <div className="flex items-center gap-2">
+                          {/* Position indicator */}
+                          <div className={`flex items-center justify-center ${
+                            netPosition === 'long' ? 'bg-green-500' : 
+                            netPosition === 'short' ? 'bg-red-500' : 
+                            'bg-gray-500'
+                          } text-white text-xs font-semibold px-2 py-1 rounded min-w-[50px]`}>
+                            <span className="flex items-center gap-1">
+                              {netPosition === 'long' && <TrendingUp size={12} />}
+                              {netPosition === 'short' && <TrendingDown size={12} />}
+                              {netPosition.toUpperCase()}
+                            </span>
+                          </div>
+                          
+                          {/* Amount indicator */}
+                          <div className="bg-[#1e293b] text-white text-xs font-mono px-2 py-1 rounded min-w-[80px] text-center">
+                            {formatCurrency(latestAmount)}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Bar Container - Full width on mobile */}
+                      <div className="w-full relative h-6 mt-1">
+                        {/* Background Bar */}
+                        <div className="absolute inset-y-0 left-0 right-0 bg-[#1e293b]/50 rounded-md"></div>
+                        
+                        {/* Value Bar */}
+                        <div 
+                          className="absolute inset-y-0 left-0 rounded-md transition-all duration-1000 ease-out"
+                          style={{ 
+                            width: `${progressPercentage}%`,
+                            background: `linear-gradient(90deg, ${color}, ${color === '#9b87f5' ? '#33C3F0' : '#9b87f5'})`,
+                          }}
+                        >
+                        </div>
+                        
+                        {/* Value Text - Prominent with background for contrast */}
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold z-10">
+                          <span className="bg-[#131624]/95 px-2 py-0.5 rounded text-white backdrop-blur-sm shadow-md border border-white/10">
+                            {formatCurrency(agent.portfolioValue)}
+                          </span>
+                        </div>
+                        
+                        {/* Position Change Indicator */}
+                        <div className={`absolute -right-7 top-1/2 -translate-y-1/2 flex items-center
+                          ${isProfit ? 'text-green-500' : 'text-red-500'}`}
+                        >
+                          {positionChange === 'up' && <ArrowUp size={14} className="animate-bounce" />}
+                          {positionChange === 'down' && <ArrowDown size={14} className="animate-bounce" />}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    // Desktop layout - horizontal
+                    <>
+                      {/* Rank indicator */}
+                      <div className="min-w-[30px] text-center flex justify-center items-center font-mono text-xs text-gray-400">
+                        #{position + 1}
+                      </div>
+                      
+                      {/* Agent Name with "Your Agent" badge first */}
+                      <div className="relative w-[150px] text-left flex items-center gap-1">
+                        <div className="relative">
+                          <div className="text-sm font-semibold truncate text-white">
+                            {agent.name}
+                          </div>
+                          
+                          {/* Your Agent badge */}
+                          {isYourAgent && (
+                            <div className="absolute -bottom-4 left-0">
+                              <div className="bg-[#9b87f5] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit">
+                                Your Agent
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Position indicator */}
+                      <div className={`flex items-center justify-center ${
+                        netPosition === 'long' ? 'bg-green-500' : 
+                        netPosition === 'short' ? 'bg-red-500' : 
+                        'bg-gray-500'
+                      } text-white text-xs font-semibold px-2 py-1 rounded min-w-[70px]`}>
+                        <span className="flex items-center gap-1">
+                          {netPosition === 'long' && <TrendingUp size={12} />}
+                          {netPosition === 'short' && <TrendingDown size={12} />}
+                          {netPosition.toUpperCase()}
+                        </span>
+                      </div>
+                      
+                      {/* Amount indicator */}
+                      <div className="bg-[#1e293b] text-white text-xs font-mono px-2 py-1 rounded min-w-[80px] text-center">
+                        {formatCurrency(latestAmount)}
+                      </div>
+                      
+                      {/* Bar Container */}
+                      <div className="flex-1 relative h-6">
+                        {/* Background Bar */}
+                        <div className="absolute inset-y-0 left-0 right-0 bg-[#1e293b]/50 rounded-md"></div>
+                        
+                        {/* Value Bar */}
+                        <div 
+                          className="absolute inset-y-0 left-0 rounded-md transition-all duration-1000 ease-out"
+                          style={{ 
+                            width: `${progressPercentage}%`,
+                            background: `linear-gradient(90deg, ${color}, ${color === '#9b87f5' ? '#33C3F0' : '#9b87f5'})`,
+                          }}
+                        >
+                        </div>
+                        
+                        {/* Value Text - More prominent with background for contrast */}
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-sm font-bold z-10">
+                          <span className="bg-[#131624]/95 px-2 py-0.5 rounded text-white backdrop-blur-sm shadow-md border border-white/10">
+                            {formatCurrency(agent.portfolioValue)}
+                          </span>
+                        </div>
+                        
+                        {/* Position Change Indicator */}
+                        <div className={`absolute -right-7 top-1/2 -translate-y-1/2 flex items-center
+                          ${isProfit ? 'text-green-500' : 'text-red-500'}`}
+                        >
+                          {positionChange === 'up' && <ArrowUp size={14} className="animate-bounce" />}
+                          {positionChange === 'down' && <ArrowDown size={14} className="animate-bounce" />}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               );
             })}
